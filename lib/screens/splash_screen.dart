@@ -133,76 +133,116 @@ class LogoPainter extends CustomPainter {
     final strokePaint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 3;
+      ..strokeWidth = 4;
 
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width * 0.3;
+    final center = Offset(size.width / 2, size.height / 2 - 20);
+    final gearRadius = size.width * 0.25;
 
-    // Draw gear teeth around the circle
-    final gearPaint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
-
+    // Draw gear outer ring with teeth
+    final gearPath = Path();
     const teethCount = 12;
+    const toothHeight = 8;
+    
     for (int i = 0; i < teethCount; i++) {
-      final angle = (i * 2 * math.pi) / teethCount;
-      final x1 = center.dx + (radius + 15) * math.cos(angle);
-      final y1 = center.dy + (radius + 15) * math.sin(angle);
-      final x2 = center.dx + (radius + 25) * math.cos(angle);
-      final y2 = center.dy + (radius + 25) * math.sin(angle);
+      final angle1 = (i * 2 * math.pi) / teethCount;
+      final angle2 = ((i + 0.3) * 2 * math.pi) / teethCount;
+      final angle3 = ((i + 0.7) * 2 * math.pi) / teethCount;
+      final angle4 = ((i + 1) * 2 * math.pi) / teethCount;
       
-      canvas.drawCircle(Offset(x2, y2), 4, gearPaint);
+      // Inner circle points
+      final x1 = center.dx + gearRadius * math.cos(angle1);
+      final y1 = center.dy + gearRadius * math.sin(angle1);
+      final x2 = center.dx + gearRadius * math.cos(angle2);
+      final y2 = center.dy + gearRadius * math.sin(angle2);
+      
+      // Outer tooth points
+      final x3 = center.dx + (gearRadius + toothHeight) * math.cos(angle2);
+      final y3 = center.dy + (gearRadius + toothHeight) * math.sin(angle2);
+      final x4 = center.dx + (gearRadius + toothHeight) * math.cos(angle3);
+      final y4 = center.dy + (gearRadius + toothHeight) * math.sin(angle3);
+      
+      // Back to inner circle
+      final x5 = center.dx + gearRadius * math.cos(angle3);
+      final y5 = center.dy + gearRadius * math.sin(angle3);
+      final x6 = center.dx + gearRadius * math.cos(angle4);
+      final y6 = center.dy + gearRadius * math.sin(angle4);
+      
+      if (i == 0) {
+        gearPath.moveTo(x1, y1);
+      }
+      gearPath.lineTo(x2, y2);
+      gearPath.lineTo(x3, y3);
+      gearPath.lineTo(x4, y4);
+      gearPath.lineTo(x5, y5);
+      gearPath.lineTo(x6, y6);
+    }
+    gearPath.close();
+    canvas.drawPath(gearPath, paint);
+
+    // Draw inner circle
+    canvas.drawCircle(center, gearRadius - 15, strokePaint);
+
+    // Draw small circles around the inner circle
+    const smallCircleCount = 8;
+    for (int i = 0; i < smallCircleCount; i++) {
+      final angle = (i * 2 * math.pi) / smallCircleCount;
+      final x = center.dx + (gearRadius - 15) * math.cos(angle);
+      final y = center.dy + (gearRadius - 15) * math.sin(angle);
+      canvas.drawCircle(Offset(x, y), 3, paint);
     }
 
-    // Draw main circle
-    canvas.drawCircle(center, radius, strokePaint);
-
-    // Draw arrows pointing up
+    // Draw main upward arrows
     final arrowPaint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.fill;
 
-    // Main arrow
-    final arrowPath = Path();
-    arrowPath.moveTo(center.dx, center.dy - 30);
-    arrowPath.lineTo(center.dx - 15, center.dy - 15);
-    arrowPath.lineTo(center.dx - 8, center.dy - 15);
-    arrowPath.lineTo(center.dx - 8, center.dy + 10);
-    arrowPath.lineTo(center.dx + 8, center.dy + 10);
-    arrowPath.lineTo(center.dx + 8, center.dy - 15);
-    arrowPath.lineTo(center.dx + 15, center.dy - 15);
-    arrowPath.close();
-    canvas.drawPath(arrowPath, arrowPaint);
+    // Large central arrow pointing up
+    final mainArrowPath = Path();
+    mainArrowPath.moveTo(center.dx, center.dy - 25);
+    mainArrowPath.lineTo(center.dx - 12, center.dy - 10);
+    mainArrowPath.lineTo(center.dx - 6, center.dy - 10);
+    mainArrowPath.lineTo(center.dx - 6, center.dy + 5);
+    mainArrowPath.lineTo(center.dx + 6, center.dy + 5);
+    mainArrowPath.lineTo(center.dx + 6, center.dy - 10);
+    mainArrowPath.lineTo(center.dx + 12, center.dy - 10);
+    mainArrowPath.close();
+    canvas.drawPath(mainArrowPath, arrowPaint);
 
-    // Side arrow
-    final sideArrowPath = Path();
-    sideArrowPath.moveTo(center.dx + 20, center.dy - 10);
-    sideArrowPath.lineTo(center.dx + 35, center.dy - 25);
-    sideArrowPath.lineTo(center.dx + 42, center.dy - 18);
-    sideArrowPath.lineTo(center.dx + 27, center.dy - 3);
-    sideArrowPath.close();
-    canvas.drawPath(sideArrowPath, arrowPaint);
+    // Second arrow pointing up-right
+    final secondArrowPath = Path();
+    secondArrowPath.moveTo(center.dx + 15, center.dy - 15);
+    secondArrowPath.lineTo(center.dx + 8, center.dy - 8);
+    secondArrowPath.lineTo(center.dx + 12, center.dy - 4);
+    secondArrowPath.lineTo(center.dx + 25, center.dy - 17);
+    secondArrowPath.lineTo(center.dx + 21, center.dy - 21);
+    secondArrowPath.close();
+    canvas.drawPath(secondArrowPath, arrowPaint);
 
-    // Draw curved lines
+    // Draw curved flowing lines at the bottom
     final curvePaint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 3;
+      ..strokeWidth = 4
+      ..strokeCap = StrokeCap.round;
 
-    final curvePath = Path();
-    curvePath.moveTo(center.dx - 30, center.dy + 30);
-    curvePath.quadraticBezierTo(center.dx, center.dy + 20, center.dx + 30, center.dy + 30);
-    canvas.drawPath(curvePath, curvePaint);
+    // Main flowing curve
+    final flowPath1 = Path();
+    flowPath1.moveTo(center.dx - 35, center.dy + 20);
+    flowPath1.quadraticBezierTo(center.dx - 10, center.dy + 35, center.dx + 20, center.dy + 25);
+    flowPath1.quadraticBezierTo(center.dx + 40, center.dy + 15, center.dx + 50, center.dy + 30);
+    canvas.drawPath(flowPath1, curvePaint);
 
-    final smallCurvePath = Path();
-    smallCurvePath.moveTo(center.dx - 25, center.dy + 40);
-    smallCurvePath.quadraticBezierTo(center.dx - 10, center.dy + 30, center.dx + 5, center.dy + 40);
-    canvas.drawPath(smallCurvePath, curvePaint);
+    // Secondary flowing curve
+    final flowPath2 = Path();
+    flowPath2.moveTo(center.dx - 25, center.dy + 30);
+    flowPath2.quadraticBezierTo(center.dx, center.dy + 40, center.dx + 25, center.dy + 35);
+    canvas.drawPath(flowPath2, curvePaint);
 
-    // Draw small circles
-    canvas.drawCircle(Offset(center.dx - 15, center.dy - 15), 3, paint);
-    canvas.drawCircle(Offset(center.dx + 15, center.dy - 15), 3, paint);
-    canvas.drawCircle(Offset(center.dx, center.dy + 20), 3, paint);
+    // Third flowing curve
+    final flowPath3 = Path();
+    flowPath3.moveTo(center.dx - 15, center.dy + 40);
+    flowPath3.quadraticBezierTo(center.dx + 5, center.dy + 45, center.dx + 15, center.dy + 42);
+    canvas.drawPath(flowPath3, curvePaint);
 
     // Draw text
     final textPainter = TextPainter(
@@ -210,8 +250,9 @@ class LogoPainter extends CustomPainter {
         text: 'PERFORMANCE',
         style: TextStyle(
           color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
+          fontSize: 18,
+          fontWeight: FontWeight.w900,
+          letterSpacing: 1.5,
         ),
       ),
       textDirection: TextDirection.ltr,
@@ -219,7 +260,7 @@ class LogoPainter extends CustomPainter {
     textPainter.layout();
     textPainter.paint(
       canvas,
-      Offset(center.dx - textPainter.width / 2, center.dy + 50),
+      Offset(center.dx - textPainter.width / 2, center.dy + 65),
     );
 
     final subTextPainter = TextPainter(
@@ -227,7 +268,9 @@ class LogoPainter extends CustomPainter {
         text: 'OPTIMIZER',
         style: TextStyle(
           color: Colors.white,
-          fontSize: 12,
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          letterSpacing: 3.0,
         ),
       ),
       textDirection: TextDirection.ltr,
@@ -235,7 +278,7 @@ class LogoPainter extends CustomPainter {
     subTextPainter.layout();
     subTextPainter.paint(
       canvas,
-      Offset(center.dx - subTextPainter.width / 2, center.dy + 70),
+      Offset(center.dx - subTextPainter.width / 2, center.dy + 85),
     );
   }
 
