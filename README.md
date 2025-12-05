@@ -4,6 +4,12 @@ Um aplicativo de otimização de performance para Android e Web, desenvolvido em
 
 ## 📱 Funcionalidades
 
+### 🎬 Splash Screen
+- Logo personalizada com design de engrenagem e setas
+- Animações suaves de fade in/out e escala
+- Duração de 3 segundos com transição automática
+- Branding "PERFORMANCE OPTIMIZER" com tipografia moderna
+
 ### Tela de Análise
 - Score circular do sistema (0-100 pontos)
 - Análise em tempo real do sistema
@@ -39,6 +45,31 @@ Um aplicativo de otimização de performance para Android e Web, desenvolvido em
 - Informações do app:
   - Versão 2.1.0
   - Avaliação do app
+
+## 📱 Configuração para Play Store
+
+### 🔧 Build Configuration
+- **Package Name**: `com.performanceoptimizer.app`
+- **Target SDK**: 34 (Android 14)
+- **Min SDK**: 21 (Android 5.0)
+- **Versão**: 1.0.0+1
+
+### 🔐 Assinatura Digital
+- Configuração completa para release
+- Suporte a keystore personalizado
+- ProGuard configurado para otimização
+
+### 📋 Permissões Configuradas
+- Internet e conectividade de rede
+- Acesso ao armazenamento (compatível com Android 13+)
+- Estatísticas de bateria e sistema
+- Gerenciamento de aplicativos
+
+### 🎨 Design
+- Tema escuro moderno
+- Navegação com ícones brancos
+- Logo personalizada criada com CustomPainter
+- Interface otimizada para diferentes tamanhos de tela
 
 ## 🚀 Como Executar
 
